@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔬 Genius IQ Test</title>
+    <title>🧠 Universal IQ Challenge</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
             padding: 20px;
-            background: #f4f4f9;
+            background: #f0f2f5;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -18,9 +18,9 @@
         .container {
             background: white;
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
@@ -29,21 +29,21 @@
             opacity: 0;
         }
         .header {
-            background: #2c3e50;
+            background: #1a73e8;
             color: white;
             padding: 15px;
             text-align: center;
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 700;
         }
         .question-area {
             padding: 30px;
         }
         .question {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 600;
             margin-bottom: 25px;
-            color: #2c3e50;
+            color: #1a1a1a;
             text-align: center;
         }
         .options {
@@ -52,19 +52,19 @@
             gap: 15px;
         }
         .option {
-            background: #ecf0f1;
+            background: #e8ecef;
             padding: 20px;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 18px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
         }
         .option:hover {
-            background: #dfe6e9;
+            background: #d1d9e6;
         }
         .option.selected {
-            background: #2c3e50;
+            background: #1a73e8;
             color: white;
         }
         .progress {
@@ -75,13 +75,13 @@
         }
         .progress-bar {
             height: 100%;
-            background: #2c3e50;
+            background: #1a73e8;
             width: 0;
             border-radius: 3px;
             transition: width 0.3s ease;
         }
         .next-btn {
-            background: #2c3e50;
+            background: #1a73e8;
             color: white;
             padding: 15px;
             border: none;
@@ -93,7 +93,7 @@
             transition: all 0.2s ease;
         }
         .next-btn:disabled {
-            background: #bdc3c7;
+            background: #b0bec5;
             cursor: not-allowed;
         }
         .result-area {
@@ -102,20 +102,20 @@
             display: none;
         }
         .result-title {
-            font-size: 32px;
+            font-size: 34px;
             font-weight: 700;
-            color: #2c3e50;
+            color: #1a73e8;
             margin-bottom: 20px;
         }
         .result-text {
-            font-size: 18px;
-            color: #34495e;
+            font-size: 20px;
+            color: #333;
             margin-bottom: 20px;
         }
         .iq-score {
-            font-size: 48px;
+            font-size: 50px;
             font-weight: 700;
-            color: #e74c3c;
+            color: #e91e63;
             margin: 20px 0;
         }
         @keyframes fadeIn {
@@ -127,9 +127,9 @@
         }
         .confetti {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #e74c3c;
+            width: 12px;
+            height: 12px;
+            background: #ffeb3b;
             border-radius: 50%;
             animation: fall 2s ease infinite;
         }
@@ -141,7 +141,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">🔬 Genius IQ Test</div>
+        <div class="header">🧠 Universal IQ Challenge</div>
         <div class="question-area">
             <div class="question"></div>
             <div class="options"></div>
@@ -151,7 +151,7 @@
             <button class="next-btn" disabled>Next ➡️</button>
         </div>
         <div class="result-area">
-            <div class="result-title">Result Unveiled! 🧠</div>
+            <div class="result-title">🎉 Your Genius Level!</div>
             <div class="result-text"></div>
             <div class="iq-score"></div>
         </div>
@@ -159,16 +159,21 @@
 
     <script>
         const questions = [
-            { q: "🔢 1, 4, 9, 16, __? (What's next?)", o: ["20", "25", "30", "36"], a: 1 }, // 제곱수열
-            { q: "🧩 If 🐱 = 3, 🐶 = 5, then 🐱 + 🐶 × 2 = ?", o: ["13", "16", "23", "26"], a: 0 }, // 연산 순서
-            { q: "⏳ 1년 후가 2026년이라면, 3년 전은?", o: ["2021", "2022", "2023", "2024"], a: 1 },
-            { q: "🔺 Triangle angles: 30°, 60°, __°?", o: ["70", "80", "90", "100"], a: 2 }, // 삼각형 내각 합
-            { q: "🧠 2, 3, 5, 7, __? (Prime sequence)", o: ["9", "11", "13", "15"], a: 1 },
-            { q: "⚖️ If 2🍎 = 3🍊, then 6🍎 = __🍊?", o: ["6", "9", "12", "15"], a: 1 },
-            { q: "🔄 Rotate a square 90° twice. What's the result?", o: ["180°", "90°", "360°", "0°"], a: 0 },
-            { q: "📊 1, 1, 2, 3, 5, __? (Fibonacci)", o: ["7", "8", "9", "10"], a: 1 },
-            { q: "🌐 Earth’s circumference ≈ 40,000 km. Half is?", o: ["18,000", "20,000", "22,000", "24,000"], a: 1 },
-            { q: "🕒 3:00에서 40분 후는 몇 시?", o: ["3:30", "3:40", "4:00", "4:40"], a: 1 }
+            { q: "🔢 1², 2², 3², 4², __²?", o: ["20", "25", "30", "36"], a: 1 }, // 5² = 25
+            { q: "⚖️ 2🍎 = 3🍊, then 6🍎 = __🍊?", o: ["6", "9", "12", "15"], a: 1 }, // 비례
+            { q: "➕ 3🐱 + 2🐶 = 17, 2🐱 + 3🐶 = 13, then 🐱 + 🐶 = __?", o: ["5", "6", "7", "8"], a: 2 }, // 연립방정식
+            { q: "🔄 1, 3, 6, 10, __? (Triangular numbers)", o: ["12", "15", "18", "21"], a: 1 }, // 삼각수
+            { q: "📐 △: 40° + 50° + __° = 180°?", o: ["70", "80", "90", "100"], a: 2 },
+            { q: "➗ 12🌟 ÷ 3🌟 = 4, then 18🌟 ÷ 6🌟 = __?", o: ["2", "3", "4", "5"], a: 1 },
+            { q: "🔺 2, 5, 11, 23, __? (Double + 1)", o: ["44", "45", "47", "48"], a: 2 },
+            { q: "⚖️ 5🍋 = 2🍇, 10🍋 = __🍇?", o: ["4", "5", "6", "8"], a: 0 },
+            { q: "📈 1, 1, 2, 3, 5, __? (Fibonacci)", o: ["7", "8", "9", "10"], a: 1 },
+            { q: "⏰ 12:00 + 2½ hrs = __:__", o: ["2:00", "2:30", "3:00", "3:30"], a: 1 },
+            { q: "🔢 2³ = 8, 3³ = 27, 4³ = __?", o: ["54", "64", "72", "81"], a: 1 },
+            { q: "⚖️ 3🔧 = 4🔩, 9🔧 = __🔩?", o: ["10", "12", "14", "16"], a: 1 },
+            { q: "➖ 100 - 25 + 15 - 10 = __?", o: ["70", "75", "80", "85"], a: 3 },
+            { q: "🔄 Rotate 🔳 90° × 3 = __°?", o: ["180", "270", "360", "450"], a: 1 },
+            { q: "📊 2, 6, 12, 20, __? (n(n+1))", o: ["30", "32", "35", "40"], a: 0 }
         ];
 
         let currentQuestion = 0;
@@ -228,14 +233,14 @@
             resultArea.style.display = 'block';
             resultArea.classList.add('fade-in');
             const percentage = (score / questions.length) * 100;
-            const iqEstimate = Math.round(80 + (percentage * 0.7)); // 대략적인 IQ 추정 (80~150 범위)
-            resultText.innerHTML = `Score: ${score}/${questions.length} ✅<br>Your estimated IQ is in the top tier!`;
+            const iqEstimate = Math.round(90 + (percentage * 0.6)); // IQ 90~150 범위
+            resultText.innerHTML = `Score: ${score}/${questions.length} 🌟<br>You’ve conquered the challenge!`;
             iqScore.textContent = `IQ ≈ ${iqEstimate}`;
             addConfetti();
         }
 
         function addConfetti() {
-            for (let i = 0; i < 40; i++) {
+            for (let i = 0; i < 50; i++) {
                 const confetti = document.createElement('div');
                 confetti.classList.add('confetti');
                 confetti.style.left = `${Math.random() * 100}%`;
