@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영재 테스트</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            min-height: 600px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            transform: translateY(0);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .container.hidden {
+            transform: translateY(50px);
+            opacity: 0;
+        }
+        .header {
+            background: #007aff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .question-area {
+            padding: 20px;
+        }
+        .question {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: #1c2526;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            background: #f0f0f5;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .option:hover {
+            background: #e0e0e5;
+        }
+        .option.selected {
+            background: #007aff;
+            color: white;
+        }
+        .progress {
+            height: 5px;
+            background: #e0e0e5;
+            position: relative;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #007aff;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+        .next-btn {
+            background: #007aff;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+        .next-btn:disabled {
+            background: #d0d0d5;
+            cursor: not-allowed;
+        }
+        .result-area {
+            padding: 40px 20px;
+            text-align: center;
+            display: none;
+        }
+        .result-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #007aff;
+            margin-bottom: 20px;
+        }
+        .result-text {
+            font-size: 18px;
+            color: #1c2526;
+            margin-bottom: 10px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">영재 테스트</div>
+        <div class="question-area">
+            <div class="question"></div>
+            <div class="options"></div>
+            <div class="progress">
+                <div class="progress-bar"></div>
+            </div>
+            <button class="next-btn" disabled>다음</button>
+        </div>
+        <div class="result-area">
+            <div class="result-title">테스트 완료!</div>
+            <div class="result-text"></div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "1+1은?", o: ["2", "3", "4", "5"], a: 0 },
+            { q: "사과의 영어는?", o: ["Banana", "Apple", "Orange", "Grape"], a: 1 },
+            { q: "2의 3제곱은?", o: ["6", "8", "12", "16"], a: 1 },
+            { q: "지구에서 가장 큰 대륙은?", o: ["아프리카", "아시아", "유럽", "남아메리카"], a: 1 },
+            { q: "1년은 며칠인가?", o: ["365", "366", "364", "360"], a: 0 },
+            { q: "빛의 속도는 약 얼마인가?", o: ["300,000 km/s", "30,000 km/s", "3,000 km/s", "300 km/s"], a: 0 },
+            { q: "피타고라스 정리의 식은?", o: ["a² + b² = c²", "a + b = c", "a² - b² = c²", "a/b = c"], a: 0 },
+            { q: "물의 화학식은?", o: ["H₂O", "CO₂", "O₂", "H₂SO₄"], a: 0 },
+            { q: "가장 큰 행성은?", o: ["지구", "화성", "목성", "토성"], a: 2 },
+            { q: "sqrt(16)은?", o: ["2", "4", "8", "16"], a: 1 },
+            { q: "한국의 수도는?", o: ["부산", "대구", "서울", "제주"], a: 2 },
+            { q: "1마일은 몇 킬로미터?", o: ["1.6km", "2.4km", "1.2km", "0.8km"], a: 0 },
+            { q: "삼각형의 내각 합은?", o: ["90도", "180도", "270도", "360도"], a: 1 },
+            { q: "가장 큰 소수는?", o: ["소수는 무한하다", "97", "101", "103"], a: 0 },
+            { q: "12의 약수는 몇 개?", o: ["4", "6", "8", "10"], a: 1 },
+            { q: "log₁₀(100)은?", o: ["1", "2", "3", "4"], a: 1 },
+            { q: "태양계 행성 수는?", o: ["7", "8", "9", "10"], a: 1 },
+            { q: "원주율은 약 얼마인가?", o: ["2.14", "3.14", "4.14", "5.14"], a: 1 },
+            { q: "최소공배수(6, 8)은?", o: ["12", "24", "48", "16"], a: 1 },
+            { q: "sin(90도)는?", o: ["0", "1", "0.5", "-1"], a: 1 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = null;
+
+        const questionEl = document.querySelector('.question');
+        const optionsEl = document.querySelector('.options');
+        const nextBtn = document.querySelector('.next-btn');
+        const progressBar = document.querySelector('.progress-bar');
+        const container = document.querySelector('.container');
+        const questionArea = document.querySelector('.question-area');
+        const resultArea = document.querySelector('.result-area');
+        const resultText = document.querySelector('.result-text');
+
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            questionEl.textContent = `${currentQuestion + 1}. ${q.q}`;
+            optionsEl.innerHTML = '';
+            q.o.forEach((option, index) => {
+                const div = document.createElement('div');
+                div.classList.add('option');
+                div.textContent = option;
+                div.onclick = () => selectOption(index, div);
+                optionsEl.appendChild(div);
+            });
+            progressBar.style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+            nextBtn.disabled = true;
+            selectedOption = null;
+        }
+
+        function selectOption(index, element) {
+            if (selectedOption !== null) return;
+            selectedOption = index;
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            nextBtn.disabled = false;
+        }
+
+        function nextQuestion() {
+            if (selectedOption === questions[currentQuestion].a) score++;
+            currentQuestion++;
+            container.classList.add('hidden');
+            setTimeout(() => {
+                if (currentQuestion < questions.length) {
+                    loadQuestion();
+                    container.classList.remove('hidden');
+                } else {
+                    showResult();
+                }
+            }, 300);
+        }
+
+        function showResult() {
+            const percentage = (score / questions.length) * 100;
+            const rank = Math.max(1, Math.floor(100 - (percentage * 0.99))); // 상위 퍼센트 계산
+            questionArea.style.display = 'none';
+            resultArea.style.display = 'block';
+            resultArea.classList.add('fade-in');
+            resultText.innerHTML = `점수: ${score}/${questions.length}<br>당신은 상위 ${rank}% 안에 들었습니다!`;
+        }
+
+        nextBtn.onclick = nextQuestion;
+        loadQuestion();
+    </script>
+</body>
+</html>
